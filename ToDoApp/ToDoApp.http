@@ -1,6 +1,42 @@
-@ToDoApp_HostAddress = http://localhost:5166
+@ToDoApp_HostAddress = http://127.0.0.1:5100
 
-GET {{ToDoApp_HostAddress}}/weatherforecast/
+GET {{ToDoApp_HostAddress}}/todos
 Accept: application/json
+
+###
+
+GET {{ToDoApp_HostAddress}}/todos/1
+Accept: application/json
+
+###
+
+POST {{ToDoApp_HostAddress}}/todos
+Content-Type: application/json
+
+{
+  "DateWhenAdded": "2024-10-02",
+  "TimeWhenAdded": "15:02:01",
+  "Description": "posprzatac pokoj",
+  "IsCompleted": true
+}
+
+
+###
+
+DELETE {{ToDoApp_HostAddress}}/todos/0
+Accept: application/json
+
+###
+
+PUT {{ToDoApp_HostAddress}}/todos/0
+Content-Type: application/json
+
+{
+  "Id": 1,
+  "DateWhenAdded": "2024-10-02",
+  "TimeWhenAdded": "15:02:01",
+  "Description": "posprzatac pokoddddj",
+  "IsCompleted": true
+}
 
 ###
