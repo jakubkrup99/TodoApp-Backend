@@ -14,8 +14,6 @@ POST {{ToDoApp_HostAddress}}/todos
 Content-Type: application/json
 
 {
-  "DateWhenAdded": "2024-10-02",
-  "TimeWhenAdded": "15:02:01",
   "Description": "posprzatac pokoj",
   "IsCompleted": true
 }

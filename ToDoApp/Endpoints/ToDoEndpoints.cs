@@ -1,4 +1,6 @@
+using ToDoApp.Dtos;
 using ToDoApp.Entities;
+using ToDoApp.Mapping;
 
 namespace ToDoApp.Endpoints;
 
@@ -15,7 +17,7 @@ public static class ToDoEndpoints
         toDoGroup.MapPost("/", ToDoEndpoints.Add);
         toDoGroup.MapPut("/{id:int}", ToDoEndpoints.Update);
         toDoGroup.MapDelete("/{id}", ToDoEndpoints.Delete);
-
+    
         return toDoGroup;
     }
 
@@ -32,11 +34,12 @@ public static class ToDoEndpoints
         return Results.Ok(results);
     }
 
-    public static IResult Add(ToDoContext dbContext, ToDo toDo)
+    public static IResult Add(ToDoContext dbContext, AddItemDto dto)
     {
-        var todo = dbContext.ToDoItems.Add(toDo);
+        ToDo todo = dto.ToEntity();
+        dbContext.ToDoItems.Add(todo);
         dbContext.SaveChanges();
-        return Results.CreatedAtRoute("GetToDoEndpoint", new { id = toDo.Id }, toDo);
+        return Results.CreatedAtRoute("GetToDoEndpoint", dto);
 
     }
 
