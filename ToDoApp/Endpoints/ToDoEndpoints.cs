@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ToDoApp.Dtos;
 using ToDoApp.Entities;
 using ToDoApp.Mapping;
@@ -12,48 +13,57 @@ public static class ToDoEndpoints
     {
         var toDoGroup = app.MapGroup("todos");
 
-        toDoGroup.MapGet("/{id:int}", ToDoEndpoints.Get).WithName("GetToDoEndpoint");
-        toDoGroup.MapGet("/", ToDoEndpoints.GetAll);
-        toDoGroup.MapPost("/", ToDoEndpoints.Add);
-        toDoGroup.MapPut("/{id:int}", ToDoEndpoints.Update);
-        toDoGroup.MapDelete("/{id}", ToDoEndpoints.Delete);
+        toDoGroup.MapGet("/{id:int}", ToDoEndpoints.GetAsync).WithName("GetToDoEndpoint");
+        toDoGroup.MapGet("/", ToDoEndpoints.GetAllAsync);
+        toDoGroup.MapPost("/", ToDoEndpoints.AddAsync);
+        toDoGroup.MapPut("/{id:int}", ToDoEndpoints.UpdateAsync);
+        toDoGroup.MapDelete("/{id}", ToDoEndpoints.DeleteAsync);
     
         return toDoGroup;
     }
 
 
-    public static IResult Get(ToDoContext dbContext, int id)
+    private static async Task<IResult> GetAsync(ToDoContext dbContext, int id)
     {
-        var todo = dbContext.ToDoItems.Find(id);
+        var todo = await dbContext.ToDoItems.FindAsync(id);
         return todo is null ? Results.NotFound() : Results.Ok(todo);
     }
 
-    public static IResult GetAll(ToDoContext dbContext)
+    private static async Task<IResult> GetAllAsync(ToDoContext dbContext)
     {
-        var results = dbContext.ToDoItems.Select(x => x).ToList();
+        var results = await dbContext.ToDoItems.Select(x => x).ToListAsync();
         return Results.Ok(results);
     }
 
-    public static IResult Add(ToDoContext dbContext, AddItemDto dto)
+    private static async Task<IResult> AddAsync(ToDoContext dbContext, AddItemDto dto)
     {
-        ToDo todo = dto.ToEntity();
-        dbContext.ToDoItems.Add(todo);
-        dbContext.SaveChanges();
-        return Results.CreatedAtRoute("GetToDoEndpoint", dto);
+        ToDo todo = dto.ToEntity(); 
+        await dbContext.ToDoItems.AddAsync(todo);
+        await dbContext.SaveChangesAsync();
+        return Results.CreatedAtRoute("GetToDoEndpoint", new {id = todo.Id}, dto);
 
     }
 
-    public static IResult Update(IToDoService service, ToDo toDo)
+    private static async Task<IResult> UpdateAsync(ToDoContext dbContext, ToDo toDo)
     {
 
-        service.Update(toDo);
+        var existingTodo = await dbContext.ToDoItems.FindAsync(toDo.Id);
+        if (existingTodo is null)
+        {
+            return Results.NotFound();
+        }
+        
+        dbContext.Entry(existingTodo).CurrentValues.SetValues(toDo);
+
+        await dbContext.SaveChangesAsync(); 
+        
         return Results.NoContent();
     }
 
-    public static IResult Delete(IToDoService service, int id)
+    private static async Task<IResult> DeleteAsync(ToDoContext dbContext, int id)
     {
 
-        service.Delete(id);
+        await dbContext.ToDoItems.Where(todo => todo.Id == id).ExecuteDeleteAsync();
         return Results.NoContent();
     }
 

@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{ToDoApp_HostAddress}}/todos/1
+GET {{ToDoApp_HostAddress}}/todos/4
 Accept: application/json
 
 ###
@@ -14,14 +14,14 @@ POST {{ToDoApp_HostAddress}}/todos
 Content-Type: application/json
 
 {
-  "Description": "posprzatac pokoj",
+  "Description": "es?",
   "IsCompleted": true
 }
 
 
 ###
 
-DELETE {{ToDoApp_HostAddress}}/todos/0
+DELETE {{ToDoApp_HostAddress}}/todos/7
 Accept: application/json
 
 ###
