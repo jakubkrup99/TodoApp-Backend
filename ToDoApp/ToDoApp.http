@@ -1,16 +1,16 @@
-@ToDoApp_HostAddress = http://127.0.0.1:5100
+@ToDoApp_HostAddress = https://localhost:5100
 
 GET {{ToDoApp_HostAddress}}/todos
 Accept: application/json
 
 ###
 
-GET {{ToDoApp_HostAddress}}/todos/4
+GET {{ToDoApp_HostAddress}}/todos/1   
 Accept: application/json
 
 ###
 
-POST {{ToDoApp_HostAddress}}/todos
+POST {{ToDoApp_HostAddress}}/todos  
 Content-Type: application/json
 
 {
